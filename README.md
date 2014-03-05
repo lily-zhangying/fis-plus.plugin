@@ -11,3 +11,10 @@ fis-plus.plugin
 * 控制modjs的输出。默认FIS-PLUS中 modjs输出在body标签结束后。
 * script标签中js中使用require会导致报错。
 * 使用{%placeholder mode="modjs"%}可以讲modjs同步输出到head标签中，保证script标签中js正常使用require语法。
+
+##demo
+
+ cd common
+ fisp release -c
+ fisp server start
+ http://127.0.0.1:8080/common/test
