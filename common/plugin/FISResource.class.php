@@ -4,6 +4,7 @@ class FISResource {
 
     const CSS_LINKS_HOOK = '<!--[FIS_CSS_LINKS_HOOK]-->';
     const JS_SCRIPT_HOOK = '<!--[FIS_JS_SCRIPT_HOOK]-->';
+    const FRAMEWORK_HOOK = '<!--[FIS_FRAMEWORK_HOOK]-->';
 
     private static $arrMap = array();
     private static $arrLoaded = array();
@@ -15,8 +16,6 @@ class FISResource {
     private static $arrScriptPool = array();
 
     public static $framework = null;
-
-    public static $syncFramework = false;
 
     //记录{%script%}, {%style%}的id属性
     public static $cp = null;
@@ -41,15 +40,24 @@ class FISResource {
         return self::JS_SCRIPT_HOOK;
     }
 
+    public static function frameworkHook(){
+        return self::FRAMEWORK_HOOK;
+    }
+
     //输出模板的最后，替换css hook为css标签集合,替换js hook为js代码
     public static function renderResponse($strContent){
         $cssIntPos = strpos($strContent, self::CSS_LINKS_HOOK);
         if($cssIntPos !== false){
             $strContent = substr_replace($strContent, self::render('css'), $cssIntPos, strlen(self::CSS_LINKS_HOOK));
         }
+        $frameworkIntPos = strpos($strContent, self::FRAMEWORK_HOOK);
+        if($frameworkIntPos !== false){
+            $strContent = substr_replace($strContent, self::render('framework'), $frameworkIntPos, strlen(self::FRAMEWORK_HOOK));
+        }
         $jsIntPos = strpos($strContent, self::JS_SCRIPT_HOOK);
         if($jsIntPos !== false){
-            $jsContent = self::render('js') . self::renderScriptPool();
+            $jsContent = ($frameworkIntPos !== false) ? '' : self::getModJsHtml(); 
+            $jsContent .= self::render('js') . self::renderScriptPool();
             $strContent = substr_replace($strContent, $jsContent, $jsIntPos, strlen(self::JS_SCRIPT_HOOK));
         }
         self::reset();
@@ -59,12 +67,6 @@ class FISResource {
     //设置framewok mod.js
     public static function setFramework($strFramework) {
         self::$framework = $strFramework;
-    }
-
-    public static function syncFramework() {
-        if(!self::$syncFramework){
-            self::$syncFramework = true;
-        }
     }
 
     //返回静态资源uri，有包的时候，返回包的uri
@@ -114,9 +116,6 @@ class FISResource {
     public static function render($type){
         $html = '';
         if ($type === 'js') {
-            if(!self::$syncFramework){
-               $html .= self::getModJsHtml();
-            }
             if (isset(self::$arrStaticCollection['js'])) {
                 $arrURIs = &self::$arrStaticCollection['js'];
                 foreach ($arrURIs as $uri) {
@@ -127,15 +126,12 @@ class FISResource {
                 }
             }
         } else if($type === 'css'){
-
             if(isset(self::$arrStaticCollection['css'])){
                 $arrURIs = &self::$arrStaticCollection['css'];
                 $html = '<link rel="stylesheet" type="text/css" href="' . implode('"/><link rel="stylesheet" type="text/css" href="', $arrURIs) . '"/>';
             }
-
-            if(self::$syncFramework) {
-                $html .= self::getModJsHtml();
-            }
+        } else if($type === 'framework'){
+            $html .= self::getModJsHtml();
         }
 
         return $html;
