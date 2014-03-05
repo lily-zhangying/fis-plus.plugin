@@ -40,8 +40,16 @@ class FISResource {
         return self::JS_SCRIPT_HOOK;
     }
 
-    public static function frameworkHook(){
-        return self::FRAMEWORK_HOOK;
+    public static function placeHolder($mode){
+        $placeHolder = '';
+        switch ($mode) {
+            case 'modjs':
+                $placeHolder = self::FRAMEWORK_HOOK;
+                break;
+            default:
+                break;
+        }
+        return $placeHolder;
     }
 
     //输出模板的最后，替换css hook为css标签集合,替换js hook为js代码

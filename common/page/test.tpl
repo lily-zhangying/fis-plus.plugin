@@ -4,7 +4,7 @@
 	    <meta charset="utf-8"/>
     {%require name="common:static/style.css"%}
 	{%/head%}
-	{%framework_placeholder%}
+	{%placeholder mode="modjs"%}
 	{%body%}
 
 		<div id='p1'>
