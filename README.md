@@ -10,7 +10,7 @@ fis-plus.plugin
 ## 使用场景
 * 控制modjs的输出。默认FIS-PLUS中 modjs输出在body标签结束后。
 * script标签中js中使用require会导致报错。
-* 使用{%placeholder type="modjs"%}可以讲modjs同步输出到head标签中，保证script标签中js正常使用require语法。
+* 使用{%placeholder type="modjs"%}可以讲modjs输出到{%placeholder%}标签所在位（例如head标签中），保证script标签中js正常使用require语法。
 
 ## demo
 
