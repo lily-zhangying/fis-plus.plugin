@@ -19,3 +19,8 @@ fis-plus.plugin
  fisp release -c
  fisp server start
  http://127.0.0.1:8080/common/test
+
+##how to use in your project
+1. cd common/plugin
+2. 将compiler.placeholder.php和 FISResource.class.php放到common模块的plugin中
+3. 就好啦~
